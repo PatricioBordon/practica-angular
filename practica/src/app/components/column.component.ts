@@ -45,10 +45,14 @@ import { TaskDialogComponent } from './task-dialog.component';
         </mat-form-field>
         } @else {
         <h2
-          class="title text-2xl font-bold text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 -mx-3 -my-2 transition"
+          class="title text-2xl font-bold text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 -mx-3 -my-2 transition group"
           (click)="startEdit()"
         >
           {{ column.title }}
+          <mat-icon
+            class="text-sm opacity-0 group-hover:opacity-60 transition inline-block ml-2 -mb-1"
+            >edit</mat-icon
+          >
         </h2>
         }
       </div>
