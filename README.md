@@ -1,3 +1,1 @@
-ejecutar:
-npm install
-ng serve -o
+ejecutar: npm install && ng serve -o
