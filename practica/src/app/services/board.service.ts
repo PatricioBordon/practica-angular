@@ -203,4 +203,12 @@ export class BoardService {
       { id: '4', name: 'Feature', color: '#10b981' },
     ];
   }
+
+  updateColumnTitle(columnId: string, newTitle: string) {
+    this.board.update((b) => ({
+      ...b,
+      columns: b.columns.map((c) => (c.id === columnId ? { ...c, title: newTitle } : c)),
+    }));
+    this.saveBoard(this.board());
+  }
 }
