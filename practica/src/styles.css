@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { height: 100%; }
+body { 
+  margin: 0; 
+  font-family: 'Roboto', sans-serif; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+* { box-sizing: border-box; }
+
+.mat-mdc-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.mat-mdc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04) !important;
+}
+
+.text-center {
+  text-align: center;
+}
