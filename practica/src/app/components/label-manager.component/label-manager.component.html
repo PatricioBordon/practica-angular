@@ -1,0 +1,68 @@
+<h2 mat-dialog-title class="text-3xl font-bold text-gray-800 mb-6">Gestionar Etiquetas</h2>
+
+<mat-dialog-content class="max-h-96 overflow-y-auto">
+  <div class="space-y-4 mb-8">
+    @for (label of labels; track label.id) {
+    <div
+      class="flex items-center gap-4 p-5 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow"
+    >
+      <mat-form-field appearance="outline" class="flex-1 max-w-md">
+        <mat-label>Nombre</mat-label>
+        <input matInput [(ngModel)]="label.name" placeholder="Nombre de etiqueta" maxlength="10" />
+      </mat-form-field>
+
+      <input
+        type="color"
+        [(ngModel)]="label.color"
+        class="w-14 h-14 rounded-xl cursor-pointer border-4 border-white shadow-lg hover:scale-110 transition-transform"
+        title="Cambiar color"
+      />
+
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="confirmRemove(label.id, label.name)"
+        class="hover:bg-red-50"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    }
+
+    <div
+      class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-dashed border-blue-300"
+    >
+      <div class="flex items-center gap-4">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Nueva etiqueta</mat-label>
+          <input #newName matInput placeholder="Ej: Urgente, Backend, Diseño..." />
+        </mat-form-field>
+
+        <input
+          #newColor
+          type="color"
+          value="#8b5cf6"
+          class="w-16 h-16 rounded-2xl cursor-pointer shadow-xl hover:scale-110 transition-transform"
+          title="Elegir color"
+        />
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="px-8 py-4 text-lg"
+          (click)="addLabel(newName.value, newColor.value); newName.value = ''"
+        >
+          <mat-icon>add</mat-icon>
+          Añadir
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="mt-6 gap-3">
+  <button mat-button (click)="dialogRef.close()" class="text-lg">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" class="px-10 py-3 text-lg">
+    Guardar Cambios
+  </button>
+</mat-dialog-actions>

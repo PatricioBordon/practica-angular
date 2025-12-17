@@ -2,8 +2,8 @@ import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { BoardService } from '../../services/board.service';
-import { ColumnComponent } from '../../components/column.component';
+import { BoardService } from '../../services/board';
+import { ColumnComponent } from '../../components/column/column.component';
 
 @Component({
   selector: 'app-kanban',

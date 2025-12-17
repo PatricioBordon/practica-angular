@@ -18,11 +18,11 @@ import { MatCardModule } from '@angular/material/card';
             Una aplicación de tablero tipo Kanban en <strong>Angular 21</strong>
           </p>
           <ul class="list-disc list-inside space-y-3 mx-auto max-w-lg">
-            <li>Standalone components y Signals</li>
+            <li>Standalone components y Signals para los labels, (si le cambio color o nombre de label, cambian los labels con el mismo id en todas las tareas)</li>
             <li>Drag & Drop con CDK</li>
             <li>Etiquetas personalizadas con colores</li>
             <li>Edición inline de columnas</li>
-            <li>Persistencia con LocalStorage</li>
+            <li>Persistencia con LocalStorage (un json para tareas, y otro para labels)</li>
             <li>
               Diseño responsive y moderno con Material (pude haber usado Bootstrap como en el video
               de

@@ -2,16 +2,21 @@ import { Injectable, signal } from '@angular/core';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Board, Column, Task, CustomLabel, Label } from '../models/board.model';
 import { isPlatformBrowser } from '@angular/common';
+import { StorageService } from './storage';
 
 @Injectable({ providedIn: 'root' })
 export class BoardService {
   private readonly BOARD_KEY = 'kanban-board-v2';
   private readonly LABELS_KEY = 'kanban-labels';
+
   board = signal<Board>(this.getDefaultBoard());
   private _labels = signal<CustomLabel[]>(this.getDefaultLabels());
   readonly labels = this._labels.asReadonly();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private storageService: StorageService
+  ) {
     if (isPlatformBrowser(this.platformId)) {
       this.board.set(this.loadBoard());
       this._labels.set(this.loadLabels());
@@ -24,9 +29,7 @@ export class BoardService {
 
   saveLabels(labels: CustomLabel[]) {
     this._labels.set(labels);
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.LABELS_KEY, JSON.stringify(labels));
-    }
+    this.storageService.set(this.LABELS_KEY, labels);
 
     this.board.update((board) => {
       const validLabelIds = new Set(labels.map((l) => l.id));
@@ -57,7 +60,17 @@ export class BoardService {
   addColumn(title: string) {
     const col: Column = { id: Date.now().toString(), title, taskIds: [] };
     this.board.update((b) => ({ ...b, columns: [...b.columns, col] }));
-    this.saveBoard(this.board());
+    this.saveBoard();
+  }
+
+  updateColumnTitle(columnId: string, newTitle: string) {
+    this.board.update((b) => ({
+      ...b,
+      columns: b.columns.map((c) =>
+        c.id === columnId ? { ...c, title: newTitle } : c
+      ),
+    }));
+    this.saveBoard();
   }
 
   addTask(columnId: string, taskData: { title: string; description: string; labelIds: string[] }) {
@@ -79,13 +92,10 @@ export class BoardService {
         c.id === columnId ? { ...c, taskIds: [...c.taskIds, task.id] } : c
       ),
     }));
-    this.saveBoard(this.board());
+    this.saveBoard();
   }
 
-  updateTask(
-    taskId: string,
-    updates: { title?: string; description?: string; labelIds?: string[] }
-  ) {
+  updateTask(taskId: string, updates: { title?: string; description?: string; labelIds?: string[] }) {
     this.board.update((b) => {
       const task = b.tasks[taskId];
       if (!task) return b;
@@ -110,7 +120,7 @@ export class BoardService {
         },
       };
     });
-    this.saveBoard(this.board());
+    this.saveBoard();
   }
 
   deleteTask(taskId: string, columnId: string) {
@@ -121,7 +131,7 @@ export class BoardService {
         c.id === columnId ? { ...c, taskIds: c.taskIds.filter((id) => id !== taskId) } : c
       ),
     }));
-    this.saveBoard(this.board());
+    this.saveBoard();
   }
 
   moveTask(taskId: string, fromColId: string, toColId: string, toIndex: number) {
@@ -139,25 +149,19 @@ export class BoardService {
 
       return { ...board, columns };
     });
-    this.saveBoard(this.board());
+    this.saveBoard();
+  }
+
+  private saveBoard() {
+    this.storageService.set(this.BOARD_KEY, this.board());
   }
 
   private loadBoard(): Board {
-    if (!isPlatformBrowser(this.platformId)) return this.getDefaultBoard();
-    const saved = localStorage.getItem(this.BOARD_KEY);
-    return saved ? JSON.parse(saved) : this.getDefaultBoard();
-  }
-
-  private saveBoard(board: Board) {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.BOARD_KEY, JSON.stringify(board));
-    }
+    return this.storageService.get(this.BOARD_KEY, this.getDefaultBoard());
   }
 
   private loadLabels(): CustomLabel[] {
-    if (!isPlatformBrowser(this.platformId)) return this.getDefaultLabels();
-    const saved = localStorage.getItem(this.LABELS_KEY);
-    return saved ? JSON.parse(saved) : this.getDefaultLabels();
+    return this.storageService.get(this.LABELS_KEY, this.getDefaultLabels());
   }
 
   private getDefaultBoard(): Board {
@@ -170,27 +174,9 @@ export class BoardService {
         { id: '3', title: 'Terminado', taskIds: [] },
       ],
       tasks: {
-        t1: {
-          id: 't1',
-          title: 'Practicando',
-          description: 'Crear un tablero de tareas',
-          labelIds: ['1'],
-          labels: [{ name: 'Angular', color: '#3b82f6' }],
-        },
-        t2: {
-          id: 't2',
-          title: 'Segunda tarjeta',
-          description: 'Probando etiquetas',
-          labelIds: ['2'],
-          labels: [{ name: 'Importante', color: '#ef4444' }],
-        },
-        t3: {
-          id: 't3',
-          title: 'Terminar Kanban',
-          description: 'probando 123',
-          labelIds: [],
-          labels: [],
-        },
+        t1: { id: 't1', title: 'Practicando', description: 'Crear un tablero de tareas', labelIds: ['1'], labels: [{ name: 'Angular', color: '#3b82f6' }] },
+        t2: { id: 't2', title: 'Segunda tarjeta', description: 'Probando etiquetas', labelIds: ['2'], labels: [{ name: 'Importante', color: '#ef4444' }] },
+        t3: { id: 't3', title: 'Terminar Kanban', description: 'probando 123', labelIds: [], labels: [] },
       },
     };
   }
@@ -202,13 +188,5 @@ export class BoardService {
       { id: '3', name: 'Bug', color: '#f59e0b' },
       { id: '4', name: 'Feature', color: '#10b981' },
     ];
-  }
-
-  updateColumnTitle(columnId: string, newTitle: string) {
-    this.board.update((b) => ({
-      ...b,
-      columns: b.columns.map((c) => (c.id === columnId ? { ...c, title: newTitle } : c)),
-    }));
-    this.saveBoard(this.board());
   }
 }

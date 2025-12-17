@@ -1,0 +1,25 @@
+<mat-toolbar class="navbar-light">
+  <div class="container mx-auto flex items-center justify-between px-4">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" [mat-stretch-tabs]="false">
+      <a
+        mat-tab-link
+        routerLink="/tareas"
+        routerLinkActive
+        #rla1="routerLinkActive"
+        [active]="rla1.isActive"
+      >
+        Tareas
+      </a>
+      <a
+        mat-tab-link
+        routerLink="/acerca"
+        routerLinkActive
+        #rla2="routerLinkActive"
+        [active]="rla2.isActive"
+      >
+        Acerca de
+      </a>
+    </nav>
+  </div>
+</mat-toolbar>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>

@@ -1,0 +1,44 @@
+<div class="column bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 flex flex-col">
+  <div class="mb-4">
+    @if (isEditingTitle) {
+    <mat-form-field appearance="outline" class="w-full">
+      <input
+        matInput
+        [(ngModel)]="editedTitle"
+        (blur)="saveTitle()"
+        (keyup.enter)="saveTitle()"
+        (keyup.escape)="cancelEdit()"
+        autofocus
+        maxlength="30"
+        class="text-2xl font-bold"
+      />
+    </mat-form-field>
+    } @else {
+    <h2
+      class="title text-2xl font-bold text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg px-3 py-2 -mx-3 -my-2 transition group"
+      (click)="startEdit()"
+    >
+      {{ column.title }}
+      <mat-icon class="text-sm opacity-0 group-hover:opacity-60 transition inline-block ml-2 -mb-1"
+        >edit</mat-icon
+      >
+    </h2>
+    }
+  </div>
+
+  <button mat-stroked-button class="w-full mb-4" (click)="addTask()">+ Añadir tarea</button>
+
+  <div
+    cdkDropList
+    [id]="column.id"
+    [cdkDropListConnectedTo]="otherColumnIds()"
+    (cdkDropListDropped)="onDrop($event)"
+    class="drop-zone flex-1 min-h-32 space-y-3 overflow-y-auto"
+  >
+    @for (task of tasks(); track task.id) {
+    <div cdkDrag [cdkDragData]="task.id" (click)="openTask(task)">
+      <app-task-card [task]="task" />
+    </div>
+    }
+  </div>
+</div>

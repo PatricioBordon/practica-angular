@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  margin: 8px 0;
+}
+.task-card {
+  cursor: move;
+  user-select: none;
+}
+h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.desc {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+.labels {
+  margin-top: 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+mat-chip {
+  color: white;
+  font-weight: 500;
+}

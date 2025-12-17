@@ -1,0 +1,13 @@
+<mat-card class="task-card">
+  <mat-card-content>
+    <h3>{{ task.title }}</h3>
+    <p class="desc">{{ task.description }}</p>
+    <div class="labels">
+      @for (label of task.labels; track label.name) {
+      <mat-chip [style.background-color]="label.color">
+        {{ label.name }}
+      </mat-chip>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
